@@ -1,0 +1,2 @@
+* monopoly-js
+  Online multiplayer Monopoly game using node.js
