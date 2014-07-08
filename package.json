@@ -1,0 +1,10 @@
+{
+    "dependencies": {
+        "express": "*",
+        "jade": "*",
+        "socket.io": "*",
+        "underscore": "*",
+        "body-parser": "*",
+        "jsonwebtoken": "*"
+    }
+}
