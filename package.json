@@ -5,6 +5,11 @@
         "socket.io": "*",
         "underscore": "*",
         "body-parser": "*",
-        "jsonwebtoken": "*"
+        "passport": "*",
+        "express-session": "*",
+        "connect": "1.8.5",
+        "connect-mongo-store": "*",
+        "cookie-parser": "*",
+        "passport.socketio": "*"
     }
 }

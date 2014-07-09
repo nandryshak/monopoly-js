@@ -14,7 +14,16 @@ var express = require("express")
   , server = http.createServer(app)
   , io = require('socket.io')(server)
   , bodyParser = require("body-parser")
-  , _ = require("underscore");
+  , _ = require("underscore")
+  , session = require("express-session")
+  , cookieParser = require("cookie-parser");
+
+// MongoDB, Connect, Session Storage
+var passportSocketIo = require("passport.socketio")
+  , connect = require("connect")
+  , MongoStore = require("connect-mongo-store")(connect)
+  , mongoStore = new MongoStore("mongodb://localhost:27017/mpdb", []);
+
 
 /**
  * Format of a participant:
@@ -33,6 +42,39 @@ app.set("view engine", "jade");
 app.use(express.static("public", __dirname + "/public"));
 // Support JSON, urlencoded, and multipart requests
 app.use(bodyParser());
+// connect to mongo session store
+app.use(connect.session({store: mongoStore, secret: "secret"}));
+mongoStore.on("connect", function() {
+    console.log("Store is ready to use");
+});
+mongoStore.on("error", function(err) {
+    console.log("Connect session error: ", err);
+});
+
+// socket.io config
+io.use(passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key:         'express.sid',       // the name of the cookie where express/connect stores its session_id
+    secret:      'session_secret',    // the session_secret to parse the cookie
+    store:       mongoStore,        // we NEED to use a sessionstore. no memorystore please
+    success:     onAuthorizeSuccess,  // *optional* callback on success - read more below
+    fail:        onAuthorizeFail      // *optional* callback on fail/error - read more below
+}));
+
+function onAuthorizeSuccess(data, accept) {
+    console.log("Successful connection to socket.io");
+    accept();
+}
+
+function onAuthorizeFail(data, message, error, accept) {
+    if (error) {
+        throw new Error(message);
+    }
+    console.log("Failed connection to socket.io: ", message);
+    if (error) {
+        accept(new Error(message));
+    }
+}
 
 // Game Functions
 function RollDice() {
