@@ -83,10 +83,10 @@ function init() {
         socket.emit('nameChange', {id: sessionId, name: name});
     }
 
-    $('#outgoing-message').on('keydown', outgoingMessageKeyDown);
-    $('#outgoing-message').on('keyup', outgoingMessageKeyUp);
-    $('#name').on('focusout', nameFocusOut);
-    $('#send').on('click', sendMessage);
+    // $('#outgoing-message').on('keydown', outgoingMessageKeyDown);
+    // $('#outgoing-message').on('keyup', outgoingMessageKeyUp);
+    // $('#name').on('focusout', nameFocusOut);
+    // $('#send').on('click', sendMessage);
 
 }
 
