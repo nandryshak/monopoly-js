@@ -6,20 +6,8 @@ html
         script(src='/js/socket.io.js')
         script(src='/js/jquery-2.1.1.min.js')
         script(src='/js/index.js')
-        script(src='http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js')
         title Chatroom
     body
-        h1 Chatroom
+        h1 How do I authenticate
         div
-            div.inline-block
-                span Name:
-                    input(type="text", value="Anonymous")#name
-                br
-                form#message-form
-                    textarea(rows="4", cols="50", placeholder="Type Something", maxlength=200)#outgoing-message
-                    input(type="button", value="Send", disabled=true)#send
-            div.inline-block.top-aligned
-                strong Participants
-                br
-                div#participants
-        div#messages
+            a(href='/auth/google') Sign In with Google

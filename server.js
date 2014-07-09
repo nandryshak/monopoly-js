@@ -22,8 +22,9 @@ var express = require("express")
 var passportSocketIo = require("passport.socketio")
   , connect = require("connect")
   , MongoStore = require("connect-mongo-store")(connect)
-  , mongoStore = new MongoStore("mongodb://localhost:27017/mpdb", []);
-
+  , mongoStore = new MongoStore("mongodb://localhost:27017/mpdb", [])
+  , passport = require("passport")
+  , GoogleStrategy = require("passport-google").Strategy;
 
 /**
  * Format of a participant:
@@ -42,6 +43,7 @@ app.set("view engine", "jade");
 app.use(express.static("public", __dirname + "/public"));
 // Support JSON, urlencoded, and multipart requests
 app.use(bodyParser());
+app.use(cookieParser("secret"));
 // connect to mongo session store
 app.use(connect.session({store: mongoStore, secret: "secret"}));
 mongoStore.on("connect", function() {
@@ -50,6 +52,24 @@ mongoStore.on("connect", function() {
 mongoStore.on("error", function(err) {
     console.log("Connect session error: ", err);
 });
+
+var User = {
+    findOrCreate: function () {
+        
+    }
+};
+
+passport.use(new GoogleStrategy({
+    returnURL: "http://localhost:8080/auth/google/return",
+    realm: "http://localhost:8080/"
+    },
+    function (identifier, profile, done) {
+        // User.findOrCreate({ openId: identifier }, function (err, user) {
+        //     done(err, user);
+        // });
+        console.log("Login success!");
+    }
+));
 
 // socket.io config
 io.use(passportSocketIo.authorize({
@@ -70,7 +90,7 @@ function onAuthorizeFail(data, message, error, accept) {
     if (error) {
         throw new Error(message);
     }
-    console.log("Failed connection to socket.io: ", message);
+    console.log("Failed connection to socket.io:", message);
     if (error) {
         accept(new Error(message));
     }
@@ -87,6 +107,11 @@ function RollDice() {
 app.get("/", function(request, response) {
     response.render("index");
 });
+
+app.get("/auth/google", passport.authenticate('google'));
+app.get("/auth/google/return",
+       passport.authenticate("google", { successRedirect: "/",
+                                         failureRedirect: "/login"}));
 
 app.post("/message", function(request, response) {
     // the request body expects a param named "message"

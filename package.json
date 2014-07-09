@@ -7,9 +7,11 @@
         "body-parser": "*",
         "passport": "*",
         "express-session": "*",
-        "connect": "1.8.5",
+        "connect": "2.0.0",
         "connect-mongo-store": "*",
         "cookie-parser": "*",
+        "passport": "*",
+        "passport-google": "*",
         "passport.socketio": "*"
     }
 }
